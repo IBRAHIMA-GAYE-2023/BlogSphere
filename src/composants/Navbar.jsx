@@ -29,12 +29,12 @@ export default function Navbar() {
           <Link to="/Editor" className="hover:red text-sm">Editor</Link>
         </li>
   
-        <li className="font-bold bg-black text-white px-4 py-2 rounded mb-2">
+        {/* <li className="font-bold bg-black text-white px-4 py-2 rounded mb-2">
           <Link to="/Register" className="hover:red">Inscription</Link> 
         </li>
          <li className="font-bold bg-black text-white px-4 py-2 rounded mb-2">
           <Link to="/Login" className="hover:red">Connexion</Link>
-        </li>
+        </li> */}
            
       </ul>
       
