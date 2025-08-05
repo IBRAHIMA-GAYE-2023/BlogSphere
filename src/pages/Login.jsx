@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import Navbar from '../composants/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../API/Authapi';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate(); 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -23,6 +24,21 @@ export default function Login() {
       alert('Connexion réussie');
       navigate('/Dashboard'); 
     }
+
+    
+    try{
+      const response = await loginUser({email, password });
+      console.log('Inscription reussie:', response);
+      setPrenom('');
+      setEmail('');
+      setPassword('');
+
+    }catch (error) {
+      console.error('Erreur lors de l\'inscription:', error);
+      alert('Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
+    }
+     
+
   };
   return (
     <div className=''>
@@ -54,6 +70,8 @@ export default function Login() {
                     required
                 />
             </div>
+
+           
             <button type="submit" className='bg-black text-white px-4 py-3 mt-6 rounded-2xl w-full'>Se connecter</button>
             <p className='mt-4 text-center'><em>Vous n'avez pas de compte?</em> <a href="/Register" className='text-blue-500'>Inscrivez-vous</a></p>
         </form>

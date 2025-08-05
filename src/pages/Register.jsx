@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../composants/Navbar';
 import { useNavigate } from 'react-router-dom'; // 
+import { registerUser } from '../API/Authapi';
 
 export default function Register() {
   const [prenom, setPrenom] = useState('');
@@ -9,7 +10,7 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); 
 
     if (password !== confirmPassword) {
@@ -25,6 +26,20 @@ export default function Register() {
       alert('Inscription réussie');
       navigate('/Login'); 
     }
+
+    try{
+      const response = await registerUser({ prenom, email, password });
+      console.log('Inscription reussie:', response);
+      setPrenom('');
+      setEmail('');
+      setPassword('');
+
+    }catch (error) {
+      console.error('Erreur lors de l\'inscription:', error);
+      alert('Une erreur est survenue lors de l\'inscription. Veuillez réessayer.');
+    }
+
+
   };
   return (
     <div>
@@ -77,6 +92,19 @@ export default function Register() {
                     required
                 />
             </div>
+               <div className='mt-4'>
+           <label htmlFor='role' className='block text-gray-700'>Rôle:</label>
+            <select
+             id='role'
+             className='mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500 p-2'
+           >
+        <option value=""></option>
+        <option value="">Utilisateur</option>
+        <option value="auteur">Auteur</option>
+        <option value="blogueur">Blogueur</option>
+        <option value="developpeur">Développeur</option>
+         </select>
+        </div>
             <button type="submit" className='bg-black text-white px-10 py-3 mt-5 rounded-2xl w-full'>S'inscrire</button>
             <p className='mt-4 text-center'>
                 <em>Vous avez déjà un compte? </em>
