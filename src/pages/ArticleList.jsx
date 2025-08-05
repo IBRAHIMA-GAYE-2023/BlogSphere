@@ -9,11 +9,16 @@ const ArticleList = () => {
     const [keyword, setKeyword] = useState('');
     const [category, setCategory] = useState('');
 
+    console.log('Articles', articles);
+    
+
     useEffect(() => {
         const fetchArticles = async () => {
             try {
                 const response = await getAllArticles();
-                setArticles(response.data);
+                console.log('Response', response);
+                
+                setArticles(response);
             } catch (error) {
                 console.error('Erreur lors de la récupération des articles :', error);
             }

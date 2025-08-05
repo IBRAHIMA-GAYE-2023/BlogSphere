@@ -7,23 +7,26 @@ const CreateArticle = () => {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [image, setImage] = useState(null);
+    // const [image, setImage] = useState(null);
     const [isDraft, setIsDraft] = useState(false);
-    const [category, setCategory] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-           
+
         try {
             const response = await createArticle({
-                title, content, image, isDraft, category
+                title,
+                content,
+                isDraft
             });
+
             console.log('Response', response);
-            navigate('/UserDashboard'); // Redirige vers le tableau de bord
+            navigate('/ArticleList');
         } catch (error) {
             console.error('Erreur lors de la création de l\'article :', error);
         }
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white rounded shadow-md">
@@ -43,19 +46,12 @@ const CreateArticle = () => {
                 required
                 className="border border-gray-300 rounded p-2 mb-4 w-full"
             />
-            <input
+            {/* <input
                 type="file"
                 onChange={(e) => setImage(e.target.files[0])}
                 className="mb-4"
-            />
-            <input
-                type="text"
-                placeholder="Catégorie"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                // required
-                className="border border-gray-300 rounded p-2 mb-4 w-full"
-            />
+            /> */}
+
             <label className="flex items-center mb-4">
                 <input
                     type="checkbox"

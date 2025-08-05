@@ -22,7 +22,6 @@ export default function Editor() {
       </div>
         
         <h1 className='text-4xl  font-semibold mt-10 font-serif'>Bienvenue sur votre Editor</h1>
-        <RichTextEditor />
         <p className='mt-2 text-lg'>Utilisez l'éditeur pour créer et formater vos articles. <br />
           Vous pouvez ajouter du texte, des images, des liens et bien plus encore.</p>
         <p className='mt-2 text-sm text-gray-500'>N'oubliez pas de sauvegarder vos modifications régulièrement.</p>

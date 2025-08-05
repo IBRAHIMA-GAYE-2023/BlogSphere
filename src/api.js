@@ -12,18 +12,25 @@ export const createArticle = async (formData) => {
     const token = getToken();
     const response = await axios.post(`${API_URL}/ajouter`, formData, {
         headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    return response.data;
+};
+
+
+// Récupérer tous les articles
+export const getAllArticles = async () => {
+    const token = getToken();
+    const response = await axios.get(`${API_URL}/allArticles`, {
+        headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`,
         },
     });
-    console.log("Response :", response.data);
-    
-    return response.data
-};
 
-// Récupérer tous les articles
-export const getAllArticles = async () => {
-    return await axios.get(API_URL);
+    return response.data
 };
 
 // Récupérer un article par ID
