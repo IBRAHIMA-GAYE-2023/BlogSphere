@@ -13,10 +13,10 @@ export default function Home() {
           <Link to="/">BlogSphere</Link>
         </div>
         <div className='flex justify-end items-end ml-auto mr-4 gap-5'>
-          <button className='font-bold bg-white text-black px-5 py-2 rounded mb-2 mt-6'>
+          <button className='font-bold bg-white text-black px-8 py-2 rounded-full hover:bg-gray-300 transition duration-300 mb-2 mt-6'>
             <Link to="/Register">Sign In</Link>
           </button>
-          <button className="font-bold bg-white text-black px-5 py-2 rounded mb-2">
+          <button className="font-bold bg-white text-black px-8 py-2 rounded-full hover:bg-gray-300 transition duration-300 mb-2">
             <Link to="/Login">Login</Link>
           </button>
         </div>

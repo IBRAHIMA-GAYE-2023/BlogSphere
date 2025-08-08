@@ -32,15 +32,33 @@ export const loginUser = async (userData) => {
 
 
 
-export const ProfileUser = async (userData) => {
+
+export const ProfileUser = async () => {
     try {
-        // Si vous avez besoin d'envoyer des paramètres, utilisez `params`
-        const response = await axios.get(`${API_URL_AUTH}/Profile`, {
-            params: userData // Utilisez params pour envoyer des données
-        });  
-        return response.data; 
+        const token = localStorage.getItem('token');
+
+        const response = await axios.get(`${API_URL_AUTH}/profile`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        return response.data;
     } catch (error) {
         console.error('Erreur lors de la récupération du profil :', error);
-        throw error; // Propager l'erreur pour gérer les erreurs ailleurs
+        throw error; // Tu peux aussi relancer l'erreur si tu veux la gérer ailleurs
     }
 };
+
+export const updateProfile = async (userData) => {
+
+    const token = localStorage.getItem('token');
+
+    const response = await axios.put(`${API_URL_AUTH}/profile`, userData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+};
+

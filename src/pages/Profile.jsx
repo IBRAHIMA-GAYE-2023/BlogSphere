@@ -1,70 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ProfileUser } from '../API/Authapi'; // Assure-toi que cette fonction renvoie les données du profil
 
 const Profile = () => {
-    const [userName, setUserName] = useState('');
-    const [userEmail, setUserEmail] = useState('');
-    const [bio, setBio] = useState('');
-    const [profileImage, setProfileImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [user, setUser] = useState(null); // Utilise useState pour stocker le profil
     const navigate = useNavigate();
 
+    console.log('User', user);
+    
+
     useEffect(() => {
-        const name = localStorage.getItem('userName');
-        const email = localStorage.getItem('userEmail');
-        const bioStored = localStorage.getItem('userBio');
-        const profileImageStored = localStorage.getItem('profileImage') || 'default-image-url.jpg'; // URL par défaut
+        const fetchProfile = async () => {
+            try {
+                const response = await ProfileUser(); // Appel à l'API
+                console.log('Response ', response);
+                
+                setUser(response.user); // Mets à jour le state avec la réponse
+                localStorage.setItem('user', JSON.stringify(response)); // Optionnel : stocke localement
+            } catch (error) {
+                console.error("Erreur lors de la récupération du profil :", error);
+                // Redirection si non connecté ?
+                navigate('/login');
+            }
+        };
 
-        if (name && email) {
-            setUserName(name);
-            setUserEmail(email);
-        }
-
-        if (bioStored) {
-            setBio(bioStored);
-        }
-
-        // Affiche l'image de profil par défaut ou celle stockée
-        setProfileImage(profileImageStored);
-        setImagePreview(profileImageStored);
-    }, []);
+        fetchProfile();
+    }, [navigate]);
 
     const handleEditProfile = () => {
         navigate('/edit-profile');
     };
 
     const handleDelete = () => {
-        localStorage.removeItem('userName');
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('userBio');
-        localStorage.removeItem('profileImage');
-        localStorage.removeItem('token');
-        alert('Voulez-vous vraiment supprimer votre profil ?');
-        navigate('/login');
+        if (window.confirm('Voulez-vous vraiment supprimer votre profil ?')) {
+            localStorage.clear();
+            navigate('/login');
+        }
     };
+
+    if (!user) {
+        return <div className="text-center mt-10">Chargement du profil...</div>;
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-200 p-4">
-            <div className="w-1/3 bg-white p-4 rounded shadow">
-                <h1 className="font-bold text-3xl mb-4 text-center">Profil de l'Utilisateur</h1>
-                {imagePreview && (
-                    <img src={imagePreview} alt="Profile" className="w-24 h-24 rounded-full mx-auto mb-4" />
-                )}
-                <div className="mt-4">
-                    <strong>Nom:</strong> {userName}
-                </div>
-                <div className="mt-4">
-                    <strong>Email:</strong> {userEmail}
-                </div>
-                <div className="mt-4">
-                    <strong>Bio:</strong> {bio || "Ecrivez votre bio ici..."}
-                </div>
-                <div className="mt-6 flex justify-around ">
+            <div className="w-full max-w-md bg-white p-6 rounded shadow">
+                <h1 className="text-2xl font-bold mb-4 text-center">Profil</h1>
+                <img
+                    src={user.image || 'default-image-url.jpg'}
+                    alt="Profil"
+                    className="w-24 h-24 rounded-full mx-auto mb-4"
+                />
+                <p><strong>Nom:</strong> {user.name}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Bio:</strong> {user.bio || "Ajoutez une bio..."}</p>
+                <div className="mt-6 flex justify-between">
                     <button onClick={handleEditProfile} className="bg-black text-white px-4 py-2 rounded">
-                       Update Profile
+                        Modifier
                     </button>
-                    <button onClick={handleDelete} className="bg-black text-white px-4 py-2 rounded">
-                       Delete Profile 
+                    <button onClick={handleDelete} className="bg-red-600 text-white px-4 py-2 rounded">
+                        Supprimer
                     </button>
                 </div>
             </div>

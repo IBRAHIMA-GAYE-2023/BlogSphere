@@ -30,7 +30,7 @@ function App() {
           <Route path="/ArticleList" element={<ArticleList />} />
           <Route path="/articles/:id" element={<ArticleDetail />} />
           <Route path="/CreateArticle" element={<CreateArticle />} />
-          <Route path="/EditArticle/:id" element={<EditArticle />} />
+           <Route path="/articles/edit/:id" element={<EditArticle />} />
         </Route>
         {/* <Route path="/UserDashboard" element={<UserDashboard />} /> */}
       </Routes>

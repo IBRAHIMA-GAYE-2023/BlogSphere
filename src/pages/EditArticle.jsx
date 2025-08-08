@@ -8,9 +8,9 @@ const EditArticle = () => {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [image, setImage] = useState(null);
+    // const [image, setImage] = useState(null);
     const [isDraft, setIsDraft] = useState(false);
-    const [category, setCategory] = useState('');
+    // const [category, setCategory] = useState('');
 
     useEffect(() => {
         const fetchArticle = async () => {
@@ -19,9 +19,9 @@ const EditArticle = () => {
                 const article = response.data;
                 setTitle(article.title);
                 setContent(article.content);
-                setImage(article.coverImage);
+                // setImage(article.coverImage);
                 setIsDraft(article.isDraft);
-                setCategory(article.category);
+                // setCategory(article.category);
             } catch (error) {
                 console.error('Erreur lors de la récupération de l\'article :', error);
             }
@@ -31,16 +31,16 @@ const EditArticle = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('content', content);
-        if (image) formData.append('image', image);
-        formData.append('isDraft', isDraft);
-        formData.append('category', category);
+        const formData = {
+            title,
+            content,
+            isDraft
+        }
 
         try {
+
             await updateArticle(id, formData);
-            navigate('/dashboard'); // Redirige vers le tableau de bord
+            navigate(`/articles/${id}`); // Redirige vers le tableau de bord
         } catch (error) {
             console.error('Erreur lors de la mise à jour de l\'article :', error);
         }
@@ -64,19 +64,19 @@ const EditArticle = () => {
                 required
                 className="border border-gray-300 rounded p-2 mb-4 w-full"
             />
-            <input
+            {/* <input
                 type="file"
                 onChange={(e) => setImage(e.target.files[0])}
                 className="mb-4"
-            />
-            <input
+            /> */}
+            {/* <input
                 type="text"
                 placeholder="Catégorie"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 required
                 className="border border-gray-300 rounded p-2 mb-4 w-full"
-            />
+            /> */}
             <label className="flex items-center mb-4">
                 <input
                     type="checkbox"

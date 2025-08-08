@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ProfileUser, updateProfile } from '../API/Authapi';
 
 const EditProfile = () => {
-    const [newName, setNewName] = useState('');
-    const [newEmail, setNewEmail] = useState('');
-    const [bio, setBio] = useState('');
+    const [user, setUser] = useState(null)
     const [profileImage, setProfileImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const name = localStorage.getItem('userName');
-        const email = localStorage.getItem('userEmail');
-        const bioStored = localStorage.getItem('userBio');
-        const profileImageStored = localStorage.getItem('profileImage') || 'default-image-url.jpg'; // URL par défaut
+        const fetchProfile = async () => {
+            try {
+                const response = await ProfileUser(); // Appel à l'API
+                console.log('Response ', response);
 
-        if (name && email) {
-            setNewName(name);
-            setNewEmail(email);
-        }
+                setUser(response.user); // Mets à jour le state avec la réponse
+                localStorage.setItem('user', JSON.stringify(response)); // Optionnel : stocke localement
+            } catch (error) {
+                console.error("Erreur lors de la récupération du profil :", error);
+                // Redirection si non connecté ?
+                navigate('/login');
+            }
+        };
 
-        if (bioStored) {
-            setBio(bioStored);
-        }
+        fetchProfile();
+    }, [navigate]);
 
-        // Affiche l'image de profil par défaut ou celle stockée
-        setProfileImage(profileImageStored);
-        setImagePreview(profileImageStored);
-    }, []);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -37,57 +35,68 @@ const EditProfile = () => {
         }
     };
 
-    const handleUpdate = () => {
-        localStorage.setItem('userName', newName);
-        localStorage.setItem('userEmail', newEmail);
-        localStorage.setItem('userBio', bio);
-        if (profileImage) {
-            localStorage.setItem('profileImage', imagePreview);
+    // Remplir les champs à partir du profil utilisateur
+    useEffect(() => {
+        if (user) {
+            setUser(user)
         }
+    }, [user]);
 
-        alert('Profil mis à jour avec succès !');
-        navigate('/profile');
+
+    const handleUpdateProfile = async () => {
+        if (!user) return;
+        try {
+            const response = await updateProfile(user);
+            console.log('Profil mis à jour:', response);
+            alert('Proifle mise a jour avec succes')
+            navigate('/profile');
+        } catch (err) {
+            console.log("Une erreur s'est produite lors de la mise à jour !", err);
+        }
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-200 p-4">
-            <div className="w-1/3 bg-white p-4 rounded shadow">
+            <div className="w-full bg-white p-4 rounded shadow">
                 <h1 className="font-bold text-3xl mb-4 text-center">Modifier le Profil</h1>
                 {imagePreview && (
                     <img src={imagePreview} alt="Aperçu" className="w-24 h-24 rounded-full mx-auto mb-4" />
                 )}
                 <div className="mt-4">
-                    <label htmlFor='newName' className='block'>Nom:</label>
+                    <label htmlFor='newName' className='float-left'>Nom:</label>
                     <input
                         type="text"
                         id='newName'
                         className='border border-gray-300 w-full p-2 rounded'
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
+                        value={user?.name}
+                        onChange={(e) => setUser(prev => ({ ...prev, name: e.target.value }))}
+
                     />
                 </div>
                 <div className="mt-4">
-                    <label htmlFor='newEmail' className='block'>Email:</label>
+                    <label htmlFor='newEmail' className='float-left'>Email:</label>
                     <input
                         type="email"
                         id='newEmail'
                         className='border border-gray-300 w-full p-2 rounded'
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
+                        value={user?.email}
+                        onChange={(e) => setUser(prev => ({ ...prev, email: e.target.value }))}
+
                     />
                 </div>
                 <div className="mt-4">
-                    <label htmlFor='bio' className='block'>Bio:</label>
+                    <label htmlFor='bio' className='float-left'>Bio:</label>
                     <textarea
                         id='bio'
                         className='border border-gray-300 w-full p-2 rounded'
-                        value={bio}
-                        onChange={(e) => setBio(e.target.value)}
+                        value={user?.bio}
+                        onChange={(e) => setUser(prev => ({ ...prev, bio: e.target.value }))}
                         placeholder='Ecrivez votre bio ici......'
                     ></textarea>
                 </div>
                 <div className="mt-4">
-                    <label htmlFor='profileImage' className='block'>Photo de Profil:</label>
+                    <label htmlFor='profileImage' className='float-left'>Photo de Profil:</label>
                     <input
                         type="file"
                         id='profileImage'
@@ -97,7 +106,7 @@ const EditProfile = () => {
                     />
                 </div>
                 <div className="mt-4 flex justify-between">
-                    <button onClick={handleUpdate} className="bg-black text-white px-4 py-2 rounded">
+                    <button onClick={handleUpdateProfile} className="bg-black text-white px-4 py-2 rounded">
                         Mettre à jour
                     </button>
                 </div>

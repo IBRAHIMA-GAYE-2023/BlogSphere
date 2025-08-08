@@ -19,12 +19,11 @@ export default function Login() {
       
     try {
         const response = await loginUser({ email, password });
-        console.log('Connexion réussie:', response);    
+        console.log('Connexion réussie:', response.token);    
 
         // Stockez le token, le nom et l'email dans localStorage
         localStorage.setItem('token', response.token); // Assurez-vous que le token est renvoyé
-        localStorage.setItem('userName', response.user?.name); // Assurez-vous que le champ est correct
-        localStorage.setItem('userEmail', response.user?.email); // Assurez-vous que le champ est correct
+        localStorage.setItem('user', JSON.stringify(response.user)); // Assurez-vous que le champ est correct
 
         // Réinitialiser les champs de formulaire
         setEmail('');

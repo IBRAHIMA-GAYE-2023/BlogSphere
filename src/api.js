@@ -38,12 +38,15 @@ export const getArticleById = async (id) => {
     return await axios.get(`${API_URL}/${id}`);
 };
 
+export const getArticle = async (id) => {
+    return await axios.get(`${API_URL}/articles/${id}`);
+};
+
 // Mettre à jour un article
 export const updateArticle = async (id, formData) => {
     const token = getToken();
     return await axios.put(`${API_URL}/${id}`, formData, {
         headers: {
-            'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`,
         },
     });
@@ -80,18 +83,27 @@ export const dislikeArticle = async (id) => {
 };
 
 // Ajouter un commentaire
-export const addComment = async (articleId, commentData) => {
-    const token = getToken();
-    return await axios.post(`${API_URL}/${articleId}/comments`, commentData, {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-    });
+export const addComment = async (articleId, comment) => {
+    const response = await axios.post(`/api/comments/${articleId}`, comment);
+    return response.data;
 };
 
 // Récupérer les commentaires d'un article
-export const getCommentsByArticleId = async (id) => {
-    return await axios.get(`${API_URL}/${id}/comments`);
+export const getCommentsByArticleId = async (articleId) => {
+    try {
+        const response = await axios.get(`${API_URL}/articles/${articleId}`);
+        return response.data; // Retourne les données des commentaires
+    } catch (error) {
+        console.error('Erreur lors de la récupération des commentaires :', error);
+        throw error; // Relancer l'erreur pour la gestion ultérieure
+    }
+};
+
+
+// Ajoutez la fonction deleteComment
+export const deleteComment = async (commentId) => {
+    const response = await axios.delete(`/api/comments/${commentId}`); // Assurez-vous que l'URL est correcte
+    return response.data;
 };
 
 // Filtrer les articles
